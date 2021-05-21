@@ -52,20 +52,24 @@ public class Pong extends JFrame {
         timer = new Timer(40, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				ball.move();
-				if (ball.intersects(left)) {
-					System.out.println("Ball intersects left paddle!");
-					ball.reflectX();
-				}
-				if (ball.intersects(right)) {
-					System.out.println("Ball intersects left paddle!");
-					ball.reflectX();
-				}
-				repaint();
+				moveBall();
 			}
 		});
         timer.start();
 		
+	}
+	
+	private void moveBall() {
+		ball.move();
+		if (ball.intersects(left)) {
+			System.out.println("Ball intersects left paddle!");
+			ball.reflectX();
+		}
+		if (ball.intersects(right)) {
+			System.out.println("Ball intersects left paddle!");
+			ball.reflectX();
+		}
+		repaint();
 	}
 	
 	private void initializeMouseListener() {
@@ -77,7 +81,7 @@ public class Pong extends JFrame {
 			@Override
 			public void keyTyped(KeyEvent e) {
 				char key = e.getKeyChar();
-				if (key == ' ') {
+				if (key == ' ' || key == 'f' && !paused) {
 					System.out.println("pause!");
 					if (paused) {
 						timer.restart();
@@ -86,7 +90,11 @@ public class Pong extends JFrame {
 						timer.stop();
 						paused = true;
 					}
+				} else if (key == 'f') {
+					System.out.println("frame advance!");
+					moveBall();
 				}
+				
 			}
 		});
 	}
