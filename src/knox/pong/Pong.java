@@ -19,13 +19,15 @@ public class Pong extends JFrame {
 	private Ball ball;
 	private Timer timer;
 	private boolean paused = false;
+	int p1, p2;
 	
 	public Pong() {
 		setTitle("Pong!");
-		
-		left = new Paddle(55, 300);
-		right = new Paddle(745, 300);
-		ball = new Ball(400, 300);
+		p1 = 0;
+		p2 = 0;
+		left = new Paddle(55, 300, 1);
+		right = new Paddle(745,300, 2);
+		newBall();
 		
 		panel = new PongPanel(left, right, ball);
 		
@@ -49,7 +51,7 @@ public class Pong extends JFrame {
             }
         });
         
-        timer = new Timer(40, new ActionListener() {
+        timer = new Timer(5, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveBall();
@@ -58,7 +60,9 @@ public class Pong extends JFrame {
         timer.start();
 		
 	}
-	
+	public void newBall() {
+		ball = new Ball(400, 300);
+	}
 	private void moveBall() {
 		ball.move();
 		if (ball.intersects(left)) {
@@ -66,8 +70,28 @@ public class Pong extends JFrame {
 			ball.reflectX();
 		}
 		if (ball.intersects(right)) {
-			System.out.println("Ball intersects left paddle!");
+			System.out.println("Ball intersects right paddle!");
 			ball.reflectX();
+		}
+		if (ball.x <= 0) {
+			ball.setXDirection(+1);
+			p1++;
+			newBall();
+			System.out.println("Player 2: "+ p2);
+			
+	}
+		if (ball.x >= 800) {
+			ball.setXDirection(-1);
+			p2++;
+			newBall();
+			System.out.println("Player 1: "+ p1);
+		}
+		if (ball.y <= 20 ) {
+			ball.setYDirection(+1);
+		}
+		
+		if (ball.y >= 585) {
+			ball.setYDirection(-1);
 		}
 		repaint();
 	}
@@ -96,7 +120,17 @@ public class Pong extends JFrame {
 				}
 				
 			}
+			public void keyPressed(KeyEvent e) {
+				left.keyPressed(e);
+				right.keyPressed(e);
+			}
+			@SuppressWarnings("unused")
+			public void keyRelease(KeyEvent e) {
+				left.keyRelease(e);
+				right.keyRelease(e);
+			}
 		});
+		
 	}
 	
 	private void initializeMenu() {
